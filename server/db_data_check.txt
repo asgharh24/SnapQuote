@@ -1,0 +1,18 @@
+[
+  {
+    "item_name": "ST-001",
+    "image_url": null
+  },
+  {
+    "item_name": "ST-002",
+    "image_url": null
+  },
+  {
+    "item_name": "Bala Limestone",
+    "image_url": "http://localhost:5000/uploads/1766230400846-557370986.jfif"
+  },
+  {
+    "item_name": "Bala Corner",
+    "image_url": "http://localhost:5000/uploads/1766231794477-204110889.jfif"
+  }
+]

@@ -1,0 +1,2 @@
+QUOTATION_ITEMS: id, quote_id, product_id, item_name, description_override, origin_snapshot, unit_of_measure, quantity, original_unit_price, discounted_unit_price, cost_price_snapshot, row_total, image_url, created_at
+PRODUCTS: id, item_name, origin, product_description, unit, base_price, cost_price, image_url, created_at

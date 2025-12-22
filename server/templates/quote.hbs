@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Quote {{quote_number}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            margin: 0;
+            padding: 40px;
+            line-height: 1.5;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 60px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-box {
+            width: 40px;
+            height: 40px;
+            background: #0ea5e9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: #0f172a;
+        }
+
+        .company-info {
+            font-size: 22px;
+            color: white;
+            background-color: #626975dc;
+            width: 150px;
+            height: 55px;
+            text-align: center;
+            line-height: 55px;
+            margin-top: -25px;
+            clip-path: polygon(100% 0%, 100% 49%, 100% 100%, 10% 100%, 0% 80%, 1% 0);
+        }
+
+        .quote-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .client-section h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .client-name {
+            font-size: 14px;
+            font-weight: 400;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .quote-meta {
+            text-align: right;
+        }
+
+        .quote-number {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 4px;
+            color: #0f172a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+
+        th {
+            background: #f1f5f9;
+            text-align: left;
+            padding: 12px;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #64748b;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+            font-size: 13px;
+        }
+
+        .item-cell {
+            display: flex;
+            gap: 12px;
+        }
+
+        .item-thumb {
+            width: 75px;
+            height: 75px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .item-details b {
+            display: block;
+            margin-bottom: 4px;
+            color: #0f172a;
+        }
+
+        .item-details p {
+            margin: 0;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .item-details .rich-description {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .item-details .rich-description ul {
+            margin: 4px 0;
+            padding-left: 18px;
+        }
+
+        .item-details .rich-description li {
+            margin-bottom: 2px;
+        }
+
+        .item-details .rich-description p {
+            margin: 0;
+        }
+
+        .price-cell {
+            white-space: nowrap;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #94a3b8;
+            font-size: 11px;
+            display: block;
+        }
+
+        .current-price {
+            font-weight: 600;
+        }
+
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .totals-table {
+            width: 300px;
+        }
+
+        .totals-table td {
+            padding: 8px 12px;
+            border: none;
+        }
+
+        .totals-table .label {
+            color: #64748b;
+        }
+
+        .totals-table .value {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .grand-total {
+            background: #f8fafc;
+            border-top: 2px solid #2c3b427a !important;
+        }
+
+        .grand-total .label {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .grand-total .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+            font-size: 10px;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        .terms-section {
+            margin-top: 40px;
+            page-break-inside: avoid;
+        }
+
+        .terms-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 4px;
+        }
+
+        .terms-content {
+            font-size: 10px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .terms-content ul,
+        .terms-content ol {
+            margin: 4px 0;
+            padding-left: 20px;
+        }
+
+        .terms-content p {
+            margin: 4px 0;
+        }
+
+        /* Watermark Styles */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 15rem;
+            color: rgba(226, 232, 240, 0.4);
+            font-weight: 700;
+            pointer-events: none;
+            z-index: -1;
+            text-transform: uppercase;
+            letter-spacing: 1.5rem;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    {{#if isDraft}}
+    <div class="watermark">DRAFT</div>
+    {{/if}}
+    <div class="header">
+        <div class="logo-container">
+            {{#if logoBase64}}
+            <img src="{{logoBase64}}" style="height: 75px; width: auto; margin-top: -30px;">
+            {{else}}
+            <div class="logo-box">S</div>
+            <div class="logo-text">SIRKAP</div>
+            {{/if}}
+        </div>
+        <div class="company-info">
+            <b>QUOTATION</b>
+        </div>
+    </div>
+
+    <div class="quote-info">
+        <div class="client-section">
+            <div class="client-name"><b>Client:</b> {{company_name}}</div>
+            {{#if contact_person}}<div class="client-name"><b>Contact:</b> {{contact_person}}</div>{{/if}}
+            {{#if vat_number}}<div>TRN: {{vat_number}}</div>{{/if}}
+            <div class="client-name"><b>Project:</b> {{project_name}}</div>
+        </div>
+        <div class="quote-meta">
+            <div style="margin-top: 25px; font-size: 14px; font-weight: 600;"><b>Date:</b> {{formatDate date_issued}}
+            </div>
+            <div class="quote-number">Quote #{{quote_number}}</div>
+            <div style="color: #64748b; font-size: 10px;">Version {{version_number}}</div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Item Description</th>
+                <th>Qty</th>
+                <th>Unit</th>
+                <th style="text-align: right">Unit Price</th>
+                <th style="text-align: right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each items}}
+            <tr>
+                <td>
+                    <div class="item-cell">
+                        {{#if image_url}}
+                        <img src="{{image_url}}" class="item-thumb">
+                        {{/if}}
+                        <div class="item-details">
+                            <b>{{#if item_name}}{{item_name}}{{else}}Custom Item{{/if}}</b>
+                            <div class="rich-description">{{{description_override}}}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>{{quantity}}</td>
+                <td>{{unit_of_measure}}</td>
+                <td style="text-align: right" class="price-cell">
+                    {{#if (showStrikeThrough original_unit_price discounted_unit_price)}}
+                    <span class="old-price">AED {{formatCurrency original_unit_price}}</span>
+                    {{/if}}
+                    <span class="current-price">AED {{formatCurrency discounted_unit_price}}</span>
+                </td>
+                <td style="text-align: right; font-weight: 600">AED {{formatCurrency row_total}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <div class="totals-section">
+        <table class="totals-table">
+            <tr>
+                <td class="label">Subtotal</td>
+                <td class="value">AED {{formatCurrency subtotal_aed}}</td>
+            </tr>
+            {{#if is_vat_applicable}}
+            <tr>
+                <td class="label">VAT (5%)</td>
+                <td class="value">AED {{formatCurrency vat_amount_aed}}</td>
+            </tr>
+            {{/if}}
+            {{#if is_delivery_applicable}}
+            <tr>
+                <td class="label">Delivery Charges</td>
+                <td class="value">AED {{formatCurrency delivery_charges_aed}}</td>
+            </tr>
+            {{/if}}
+            <tr class="grand-total">
+                <td class="label">Grand Total</td>
+                <td class="value">AED {{formatCurrency grand_total_aed}}</td>
+            </tr>
+        </table>
+    </div>
+
+    {{#if terms_content}}
+    <div class="terms-section">
+        <div class="terms-title">Terms & Conditions</div>
+        <div class="terms-content">
+            {{{terms_content}}}
+        </div>
+    </div>
+    {{/if}}
+
+    <div class="footer">
+        This is a computer-generated document. Subject to our standard terms and conditions.
+        <br>Generated on {{formatDate generated_at}}
+    </div>
+</body>
+
+</html>
