@@ -1,7 +1,4 @@
--- 1. Setup Database
-CREATE DATABASE IF NOT EXISTS sirkap_quotations;
-USE sirkap_quotations;
-
+-- 1. Setup Tables
 -- 2. Users Table
 -- Handles Role-Based Access Control (RBAC)
 CREATE TABLE users (
