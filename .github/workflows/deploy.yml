@@ -41,28 +41,38 @@ jobs:
             # Determine environment
             ENV="${{ github.event.inputs.environment || 'staging' }}"
             TARGET_DIR="/var/www/snapquote/$ENV"
+            REPO_URL="https://github.com/asgharh24/SnapQuote.git"
             PORT=$([ "$ENV" == "live" ] && echo "5000" || echo "5001")
             
             echo "Deploying to $ENV environment at $TARGET_DIR on port $PORT..."
             
-            # Update source code
+            # Ensure target directory exists and is a git repo
+            if [ ! -d "$TARGET_DIR/.git" ]; then
+                echo "Directory is not a git repo. Performing initial clone..."
+                sudo mkdir -p $TARGET_DIR
+                sudo chown -R $USER:$USER $TARGET_DIR
+                rm -rf $TARGET_DIR/*
+                git clone $REPO_URL $TARGET_DIR
+            fi
+
             cd $TARGET_DIR
-            git pull origin main
+            git fetch --all
+            git reset --hard origin/main
             
             # Setup Backend
             cd server
             npm install --production
             
-            # Setup Frontend (Copy build from action or build on server)
-            # For simplicity, we built it in the action, but ssh-action doesn't sync files.
-            # Usually we'd use rsync or build on server. Let's build on server for now.
+            # Setup Frontend
             cd ../client
             npm install
             npm run build
             
             # Restart Application
             cd ../server
+            # Load path for PM2 if necessary
+            export PATH=$PATH:/usr/bin:/usr/local/bin
             pm2 delete "snapquote-$ENV" || true
-            PORT=$PORT pm2 start index.js --name "snapquote-$ENV"
+            PORT=$PORT pm2 start index.js --name "snapquote-$ENV" --update-env
             
             echo "✅ Deployment to $ENV complete!"
