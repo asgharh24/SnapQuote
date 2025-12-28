@@ -59,7 +59,10 @@ CREATE TABLE quotations (
     date_issued DATE NOT NULL,
     status ENUM('Draft', 'Sent', 'Approved', 'Rejected', 'Revised') DEFAULT 'Draft',
     is_vat_applicable TINYINT(1) DEFAULT 1,
+    is_delivery_applicable TINYINT(1) DEFAULT 0,
+    delivery_charges_aed DECIMAL(15, 2) DEFAULT 0.00,
     terms_id INT,
+    terms_content TEXT,
     created_by INT NOT NULL,
     subtotal_aed DECIMAL(15, 2) DEFAULT 0.00,
     vat_amount_aed DECIMAL(15, 2) DEFAULT 0.00,
@@ -78,6 +81,7 @@ CREATE TABLE quotation_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     quote_id INT NOT NULL,
     product_id INT NULL, -- NULL indicates an Admin-created Bespoke Item
+    item_name VARCHAR(255),
     description_override TEXT, -- Holds custom furniture/vanity names
     origin_snapshot VARCHAR(100),
     unit_of_measure VARCHAR(20),
