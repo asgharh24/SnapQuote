@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { z } from 'zod';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
+import { API_BASE_URL } from '../config';
 
 // DnD Kit
 import {
@@ -111,9 +112,9 @@ export default function QuoteBuilder() {
         try {
             // Fetch Clients & Products for selectors
             const [clientRes, productRes, termsRes] = await Promise.all([
-                fetch('http://localhost:5000/api/clients'),
-                fetch('http://localhost:5000/api/products'),
-                fetch('http://localhost:5000/api/terms-profiles')
+                fetch(`${API_BASE_URL}/api/clients`),
+                fetch(`${API_BASE_URL}/api/products`),
+                fetch(`${API_BASE_URL}/api/terms-profiles`)
             ]);
 
             const clientsData = await clientRes.json();
@@ -126,7 +127,7 @@ export default function QuoteBuilder() {
 
             if (id) {
                 // Fetch Existing Quote
-                const quoteRes = await fetch(`http://localhost:5000/api/quotes/${id}`);
+                const quoteRes = await fetch(`${API_BASE_URL}/api/quotes/${id}`);
                 const quoteData = await quoteRes.json();
 
                 // If it's a revision-intent from URL
@@ -175,7 +176,7 @@ export default function QuoteBuilder() {
                 })));
             } else {
                 // New Quote: Fetch next number
-                const nextNumRes = await fetch('http://localhost:5000/api/quotes/next-number');
+                const nextNumRes = await fetch(`${API_BASE_URL}/api/quotes/next-number`);
                 const { nextNumber } = await nextNumRes.json();
                 setQuoteHeader(prev => ({ ...prev, quote_number: nextNumber }));
                 // Start with one empty catalog row
@@ -229,7 +230,7 @@ export default function QuoteBuilder() {
             console.log('--- PRODUCT SELECTION START ---');
             console.log('Selected Stub:', productStub);
 
-            const res = await fetch(`http://localhost:5000/api/products/${productStub.id}`);
+            const res = await fetch(`${API_BASE_URL}/api/products/${productStub.id}`);
             if (!res.ok) throw new Error('Failed to fetch full product details');
 
             const product = await res.json();
@@ -314,7 +315,7 @@ export default function QuoteBuilder() {
                 return;
             }
 
-            const url = id && quoteHeader.id ? `http://localhost:5000/api/quotes/${id}` : 'http://localhost:5000/api/quotes';
+            const url = id && quoteHeader.id ? `${API_BASE_URL}/api/quotes/${id}` : `${API_BASE_URL}/api/quotes`;
             const method = id && quoteHeader.id ? 'PUT' : 'POST';
 
             const res = await fetch(url, {
@@ -350,7 +351,7 @@ export default function QuoteBuilder() {
     const handleDownload = async () => {
         setIsDownloading(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/quotes/${id}/download`);
+            const res = await fetch(`${API_BASE_URL}/api/quotes/${id}/download`);
             if (!res.ok) throw new Error('Download failed');
 
             const blob = await res.blob();
@@ -374,7 +375,7 @@ export default function QuoteBuilder() {
 
         setSaving(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/quotes/${id}/revise`, {
+            const res = await fetch(`${API_BASE_URL}/api/quotes/${id}/revise`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: user.id })
@@ -400,7 +401,7 @@ export default function QuoteBuilder() {
 
         setSaving(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/quotes/${id}/status`, {
+            const res = await fetch(`${API_BASE_URL}/api/quotes/${id}/status`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1022,7 +1023,7 @@ function SortableItem({ item, index, products, updateItem, removeItem, handlePro
                                             const formData = new FormData();
                                             formData.append('image', file);
                                             try {
-                                                const res = await fetch('http://localhost:5000/api/upload', {
+                                                const res = await fetch(`${API_BASE_URL}/api/upload`, {
                                                     method: 'POST',
                                                     body: formData
                                                 });

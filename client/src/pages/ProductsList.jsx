@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingBag, PlusCircle, Search, Ruler, Package, Edit, Loader } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { API_BASE_URL } from '../config';
 
 export default function ProductsList() {
     const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function ProductsList() {
 
     const fetchProducts = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/products');
+            const res = await fetch(`${API_BASE_URL}/api/products`);
             const data = await res.json();
             setProducts(data);
         } catch (error) {

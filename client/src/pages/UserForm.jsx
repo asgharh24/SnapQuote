@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, User, Mail, Lock, Shield, Loader, AlertCircle } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { API_BASE_URL } from '../config';
 
 export default function UserForm() {
     const { id } = useParams();
@@ -25,7 +26,7 @@ export default function UserForm() {
 
     const fetchUser = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/users/${id}`);
+            const res = await fetch(`${API_BASE_URL}/api/users/${id}`);
             const data = await res.json();
             if (res.ok) {
                 setFormData({
@@ -51,7 +52,7 @@ export default function UserForm() {
         setError(null);
 
         try {
-            const url = id ? `http://localhost:5000/api/users/${id}` : 'http://localhost:5000/api/users';
+            const url = id ? `${API_BASE_URL}/api/users/${id}` : `${API_BASE_URL}/api/users`;
             const method = id ? 'PUT' : 'POST';
 
             const res = await fetch(url, {

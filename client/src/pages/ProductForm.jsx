@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Package, Ruler, Globe, Tag, Image } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
+import { API_BASE_URL } from '../config';
 
 export default function ProductForm() {
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function ProductForm() {
 
     const fetchProduct = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/products/${id}`);
+            const res = await fetch(`${API_BASE_URL}/api/products/${id}`);
             const data = await res.json();
             setFormData(data);
         } catch (error) {
@@ -45,7 +46,7 @@ export default function ProductForm() {
 
         try {
             setLoading(true);
-            const res = await fetch('http://localhost:5000/api/upload', {
+            const res = await fetch(`${API_BASE_URL}/api/upload`, {
                 method: 'POST',
                 body: uploadData
             });
@@ -68,8 +69,8 @@ export default function ProductForm() {
         setLoading(true);
 
         const url = isEditing
-            ? `http://localhost:5000/api/products/${id}`
-            : 'http://localhost:5000/api/products';
+            ? `${API_BASE_URL}/api/products/${id}`
+            : `${API_BASE_URL}/api/products`;
 
         const method = isEditing ? 'PUT' : 'POST';
 

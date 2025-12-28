@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { cn } from '../utils/cn';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
+import { API_BASE_URL } from '../config';
 
 export default function TermsManagement() {
     const { user } = useAuth();
@@ -25,7 +26,7 @@ export default function TermsManagement() {
 
     const fetchProfiles = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/terms-profiles');
+            const res = await fetch(`${API_BASE_URL}/api/terms-profiles`);
             if (!res.ok) throw new Error('Failed to fetch terms profiles');
             const data = await res.json();
             setProfiles(data);
@@ -56,8 +57,8 @@ export default function TermsManagement() {
 
         try {
             const url = editingProfile
-                ? `http://localhost:5000/api/terms-profiles/${editingProfile.id}`
-                : 'http://localhost:5000/api/terms-profiles';
+                ? `${API_BASE_URL}/api/terms-profiles/${editingProfile.id}`
+                : `${API_BASE_URL}/api/terms-profiles`;
 
             const res = await fetch(url, {
                 method: editingProfile ? 'PUT' : 'POST',
@@ -80,7 +81,7 @@ export default function TermsManagement() {
         if (!window.confirm('Are you sure you want to delete this profile?')) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/terms-profiles/${id}`, {
+            const res = await fetch(`${API_BASE_URL}/api/terms-profiles/${id}`, {
                 method: 'DELETE'
             });
             if (!res.ok) throw new Error('Failed to delete profile');

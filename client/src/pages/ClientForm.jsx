@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Building2, User, Mail, Phone, MapPin, Receipt } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function ClientForm() {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function ClientForm() {
 
     const fetchClient = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/clients/${id}`);
+            const res = await fetch(`${API_BASE_URL}/api/clients/${id}`);
             const data = await res.json();
             setFormData(data);
         } catch (error) {
@@ -38,8 +39,8 @@ export default function ClientForm() {
         setLoading(true);
 
         const url = isEditing
-            ? `http://localhost:5000/api/clients/${id}`
-            : 'http://localhost:5000/api/clients';
+            ? `${API_BASE_URL}/api/clients/${id}`
+            : `${API_BASE_URL}/api/clients`;
 
         const method = isEditing ? 'PUT' : 'POST';
 

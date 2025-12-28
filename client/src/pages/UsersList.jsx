@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Search, User, Edit, Loader, Trash2, Shield, UserCircle } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { format } from 'date-fns';
+import { API_BASE_URL } from '../config';
 
 export default function UsersList() {
     const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function UsersList() {
 
     const fetchUsers = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/users');
+            const res = await fetch(`${API_BASE_URL}/api/users`);
             const data = await res.json();
             setUsers(data);
         } catch (error) {
@@ -36,7 +37,7 @@ export default function UsersList() {
         if (!window.confirm('Are you sure you want to delete this user?')) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/users/${id}`, {
+            const res = await fetch(`${API_BASE_URL}/api/users/${id}`, {
                 method: 'DELETE'
             });
             if (res.ok) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Search, Mail, Phone, Building2, User, Edit, Loader } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { API_BASE_URL } from '../config';
 
 export default function ClientsList() {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function ClientsList() {
 
     const fetchClients = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/clients');
+            const res = await fetch(`${API_BASE_URL}/api/clients`);
             const data = await res.json();
             setClients(data);
         } catch (error) {

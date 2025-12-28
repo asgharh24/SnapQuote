@@ -4,6 +4,7 @@ import { PlusCircle, Search, FileText, Edit, Loader, MoreHorizontal, Download, E
 import { useAuth } from '../context/AuthContext';
 import { cn } from '../utils/cn';
 import { format } from 'date-fns';
+import { API_BASE_URL } from '../config';
 
 export default function QuotesList() {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function QuotesList() {
 
     const fetchQuotes = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/quotes');
+            const res = await fetch(`${API_BASE_URL}/api/quotes`);
             const data = await res.json();
             setQuotes(data);
         } catch (error) {
@@ -68,7 +69,7 @@ export default function QuotesList() {
     const handleDownload = async (quoteId, quoteNumber, version) => {
         setDownloadingId(quoteId);
         try {
-            const res = await fetch(`http://localhost:5000/api/quotes/${quoteId}/download`);
+            const res = await fetch(`${API_BASE_URL}/api/quotes/${quoteId}/download`);
             if (!res.ok) throw new Error('Download failed');
 
             const blob = await res.blob();
@@ -92,7 +93,7 @@ export default function QuotesList() {
         if (!window.confirm(`Are you sure you want to ${action} this quotation?`)) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/quotes/${quoteId}/status`, {
+            const res = await fetch(`${API_BASE_URL}/api/quotes/${quoteId}/status`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

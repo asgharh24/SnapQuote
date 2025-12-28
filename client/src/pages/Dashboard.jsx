@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { TrendingUp, Users, FileText, DollarSign, ArrowUpRight, Loader } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { cn } from '../utils/cn';
+import { API_BASE_URL } from '../config';
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/dashboard/stats?user_id=${user?.id}&user_role=${user?.role}`);
+                const res = await fetch(`${API_BASE_URL}/api/dashboard/stats?user_id=${user?.id}&user_role=${user?.role}`);
                 if (!res.ok) throw new Error('Failed to fetch stats');
                 const result = await res.json();
 
