@@ -2,17 +2,9 @@ name: Deploy SnapQuote
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ] # This will always auto-deploy to STAGING
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy to'
-        required: true
-        default: 'staging'
-        type: choice
-        options:
-        - staging
-        - live
+    # This manual trigger will be strictly for LIVE
 
 jobs:
   deploy:
@@ -38,13 +30,21 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Determine environment
-            ENV="${{ github.event.inputs.environment || 'staging' }}"
+            # Determine environment: 
+            # If triggered by a 'push' -> deploy to staging
+            # If triggered manually -> deploy to live
+            if [ "${{ github.event_name }}" == "push" ]; then
+                ENV="staging"
+                PORT="5001"
+            else
+                ENV="live"
+                PORT="5000"
+            fi
+            
             TARGET_DIR="/var/www/snapquote/$ENV"
             REPO_URL="https://github.com/asgharh24/SnapQuote.git"
-            PORT=$([ "$ENV" == "live" ] && echo "5000" || echo "5001")
             
-            echo "Deploying to $ENV environment at $TARGET_DIR on port $PORT..."
+            echo "🚀 STAGE: Starting deployment to $ENV environment..."
             
             # Ensure target directory exists and is a git repo
             if [ ! -d "$TARGET_DIR/.git" ]; then
