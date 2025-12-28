@@ -1,0 +1,68 @@
+name: Deploy SnapQuote
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - live
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Frontend
+        run: |
+          cd client
+          npm install
+          npm run build
+
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Determine environment
+            ENV="${{ github.event.inputs.environment || 'staging' }}"
+            TARGET_DIR="/var/www/snapquote/$ENV"
+            PORT=$([ "$ENV" == "live" ] && echo "5000" || echo "5001")
+            
+            echo "Deploying to $ENV environment at $TARGET_DIR on port $PORT..."
+            
+            # Update source code
+            cd $TARGET_DIR
+            git pull origin main
+            
+            # Setup Backend
+            cd server
+            npm install --production
+            
+            # Setup Frontend (Copy build from action or build on server)
+            # For simplicity, we built it in the action, but ssh-action doesn't sync files.
+            # Usually we'd use rsync or build on server. Let's build on server for now.
+            cd ../client
+            npm install
+            npm run build
+            
+            # Restart Application
+            cd ../server
+            pm2 delete "snapquote-$ENV" || true
+            PORT=$PORT pm2 start index.js --name "snapquote-$ENV"
+            
+            echo "✅ Deployment to $ENV complete!"
