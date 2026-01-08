@@ -1,0 +1,22 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: snapquote-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: sirkap_quotations
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: snapuser
+      MYSQL_PASSWORD: snap_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./server/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+volumes:
+  mysql_data:

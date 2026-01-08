@@ -9,6 +9,7 @@ const multer = require('multer');
 const path = require('path');
 const sanitizeHtml = require('sanitize-html');
 const fs = require('fs');
+const csv = require('csv-parser');
 const PDFService = require('./services/PDFService');
 
 dotenv.config();
@@ -54,6 +55,7 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
 // Database Pool
 const pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 3306,
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || 'password',
     database: process.env.DB_NAME || 'sirkap_quotations',
@@ -198,6 +200,58 @@ app.put('/api/products/:id', async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Error updating product' });
     }
+});
+
+app.post('/api/products/import', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const results = [];
+    const filePath = req.file.path;
+
+    fs.createReadStream(filePath)
+        .pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', async () => {
+            const connection = await pool.getConnection();
+            try {
+                await connection.beginTransaction();
+
+                for (const row of results) {
+                    const sanitizedDescription = sanitizeHtml(row.product_description || '', {
+                        allowedTags: ['b', 'i', 'em', 'strong', 'ul', 'ol', 'li', 'p', 'br', 'u', 'span'],
+                        allowedAttributes: { '*': ['class', 'style'] }
+                    });
+
+                    await connection.execute(
+                        'INSERT INTO products (item_name, origin, product_description, unit, base_price, cost_price, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            row.item_name || 'Unnamed Product',
+                            row.origin || '',
+                            sanitizedDescription,
+                            row.unit || 'SQM',
+                            row.base_price || 0,
+                            row.cost_price || 0,
+                            row.image_url || null
+                        ]
+                    );
+                }
+
+                await connection.commit();
+                res.json({ message: `${results.length} products imported successfully` });
+            } catch (error) {
+                await connection.rollback();
+                console.error('Import Error:', error);
+                res.status(500).json({ message: 'Error importing products: ' + error.message });
+            } finally {
+                connection.release();
+                // Clean up the uploaded file
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+            }
+        });
 });
 
 // --- Users API ---

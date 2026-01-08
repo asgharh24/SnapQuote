@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingBag, PlusCircle, Search, Ruler, Package, Edit, Loader } from 'lucide-react';
+import { ShoppingBag, PlusCircle, Search, Ruler, Package, Edit, Loader, Upload } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { API_BASE_URL } from '../config';
 
@@ -53,13 +53,51 @@ export default function ProductsList() {
                     <h1 className="text-3xl font-display font-bold text-slate-900">Products (Catalog)</h1>
                     <p className="text-slate-500 mt-1">Manage your stone types and services.</p>
                 </div>
-                <button
-                    onClick={() => navigate('/products/new')}
-                    className="btn-primary flex items-center justify-center space-x-2 shadow-lg shadow-primary-500/20"
-                >
-                    <PlusCircle size={20} />
-                    <span>Add Product</span>
-                </button>
+                <div className="flex items-center space-x-3">
+                    <label className="btn-secondary flex items-center justify-center space-x-2 cursor-pointer border-dashed border-2 hover:border-primary-500 hover:text-primary-600 transition-all">
+                        <Upload size={20} />
+                        <span>Import CSV</span>
+                        <input
+                            type="file"
+                            accept=".csv"
+                            className="hidden"
+                            onChange={async (e) => {
+                                const file = e.target.files[0];
+                                if (!file) return;
+
+                                const formData = new FormData();
+                                formData.append('file', file);
+
+                                try {
+                                    setLoading(true);
+                                    const res = await fetch(`${API_BASE_URL}/api/products/import`, {
+                                        method: 'POST',
+                                        body: formData
+                                    });
+                                    const data = await res.json();
+                                    if (res.ok) {
+                                        alert(data.message);
+                                        fetchProducts();
+                                    } else {
+                                        alert(data.message || 'Import failed');
+                                    }
+                                } catch (error) {
+                                    console.error('Import error:', error);
+                                    alert('Error importing products');
+                                } finally {
+                                    setLoading(false);
+                                }
+                            }}
+                        />
+                    </label>
+                    <button
+                        onClick={() => navigate('/products/new')}
+                        className="btn-primary flex items-center justify-center space-x-2 shadow-lg shadow-primary-500/20"
+                    >
+                        <PlusCircle size={20} />
+                        <span>Add Product</span>
+                    </button>
+                </div>
             </div>
 
             {/* Filters */}
